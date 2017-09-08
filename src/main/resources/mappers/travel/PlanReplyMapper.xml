@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 다른 mapper와 중복되지 않도록 네임스페이스 기재 -->
+<mapper namespace="planReply">
+	<insert id="insertPlanReply">
+		insert
+		into T_PlanReply values
+		(seq_PlanReplyNum.nextval, #{planMainNum}, #{email}, #{content},
+		sysdate, sysdate, #{secretReply})
+	</insert>
+
+	<select id="planReplyList" resultType="com.kh.web.model.travel.dto.PlanReplyVO">
+		<!-- <include refid="pagingHeader" /> -->
+		SELECT
+		*
+		FROM T_PlanReply  
+		WHERE
+		planMainNum = #{planMainNum}
+		ORDER BY planReplyNum
+	<!-- 	<include refid="pagingFooter" /> -->
+	</select>
+
+	<select id="countPlanReply" resultType="String">
+		SELECT COUNT(*) FROM
+		t_PlanReply WHERE planMainNum=#{planMainNum}
+	</select>
+
+	<!-- 페이징 sql -->
+	<sql id="pagingHeader">
+		SELECT * FROM (
+		SELECT ROWNUM AS rn, A.* FROM (
+	</sql>
+	<sql id="pagingFooter">
+		) A
+		) WHERE rn BETWEEN #{start} AND #{end}
+	</sql>
+</mapper>

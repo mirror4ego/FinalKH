@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 다른 mapper와 중복되지 않도록 네임스페이스 기재 -->
+<mapper namespace="mypage">
+
+	<select id="travellist" resultType="com.kh.web.model.member.dto.MypageVO">
+		SELECT
+		ID,
+		TRAVEL_NAME
+		FROM MY_TRAVEL
+		WHERE ID= #{userid}
+	</select>
+	<select id="travelnamelist" resultType="com.kh.web.model.travel.dto.PlanMainVO">
+		SELECT
+		TITLE,
+		PLANMAINNUM
+		FROM T_PLANMAIN
+		WHERE EMAIL= #{id}
+	</select>
+	<insert id="travelinsert">
+		INSERT INTO MY_TRAVEL (ID, TRAVEL_NAME) VALUES (#{id} ,#{travel_name})
+	</insert>
+	<delete id="deletetravel">
+		DELETE FROM MY_TRAVEL WHERE ID=#{id} AND TRAVEL_NAME=#{travel_name}
+	</delete>
+	<!-- com.kh.web.model.member.dto.MypageVO -->
+	<select id="albumlist" parameterType="hashMap"
+		resultType="com.kh.web.model.member.dto.MypageVO">
+		SELECT
+		ALBUMPATH,
+		ALBUMNAME,
+		ID,
+		TRAVEL_NAME
+		FROM ALBUM
+		WHERE TRAVEL_NAME=#{travel_name} AND ID= #{id}
+	</select>
+	<insert id="albuminsert">
+		INSERT INTO ALBUM (ID, TRAVEL_NAME, ALBUMPATH, ALBUMNAME) VALUES ( #{id},
+		#{travel_name},#{albumpath},#{albumname})
+	</insert>
+
+	<delete id="deletealbum">
+		DELETE FROM ALBUM WHERE ALBUMPATH= #{albumpath}
+	</delete>
+
+	<select id="chartView" resultType="com.kh.web.model.member.dto.MypageVO">
+		SELECT
+		FLIGHT,
+		TRANSFER,
+		HOTEL,
+		MEAL,
+		TOUR,
+		ID,
+		TRAVEL_NAME
+		FROM CHART
+		WHERE ID=#{id} AND TRAVEL_NAME=#{travel_name}
+	</select>
+	<insert id="chartinsert">
+		INSERT INTO chart (ID, TRAVEL_NAME, FLIGHT, TRANSFER,HOTEL,TOUR,MEAL)
+		VALUES ( #{id},
+		#{travel_name},#{flight},#{transfer},#{hotel},#{tour},#{meal})
+	</insert>
+	<update id="chartupdate">
+		UPDATE chart
+		SET
+		flight = #{flight},
+		transfer = #{transfer},
+		hotel = #{hotel},
+		tour = #{tour},
+		meal = #{meal}
+		WHERE
+		id = #{id} and travel_name = #{travel_name}
+	</update>
+	<select id="viewcal" resultType="com.kh.web.model.member.dto.MypageCalVO">
+		select
+		t_planmain.email as email,
+		t_planmain.planmainnum as planMainNum,
+		t_plandetail.contentid as contentId,
+		t_contentcommon.title as title,
+		t_plandetail.starttime as startTime,
+		t_plandetail.endtime as endTime,
+		t_planmain.startday as startday
+		from
+		t_planmain,
+		t_plandetail,
+		t_contentcommon
+		where
+		t_planmain.planmainnum=t_plandetail.planmainnum and
+		t_plandetail.contentid= t_contentcommon.contentid and
+		t_planmain.email=#{id} and
+		t_planmain.title=#{travel_name}
+	</select>
+	<select resultType="com.kh.web.model.member.dto.MemberVO" id="getmem"> 
+SELECT EMAIL AS userEmail, USERID AS userID, PASSWORD AS userPW 
+FROM T_USERINFO 
+WHERE EMAIL=#{id} </select>
+
+<update id="memberupdate"> 
+UPDATE T_USERINFO 
+SET USERID = #{userId}, PASSWORD = #{userPw} WHERE EMAIL = #{userEmail} 
+</update>
+	
+	<sql id="pagingHeader">
+		SELECT * FROM (
+		SELECT ROWNUM AS rn, A.* FROM (
+	</sql>
+	<sql id="pagingFooter">
+		) A
+		) WHERE rn BETWEEN #{start} AND #{end}
+	</sql>
+</mapper>

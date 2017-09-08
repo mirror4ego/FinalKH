@@ -1,0 +1,82 @@
+DECLARE
+  l_param_list     VARCHAR2(512);
+
+  l_http_request   UTL_HTTP.req;
+  l_http_response  UTL_HTTP.resp;
+
+  l_response_text  VARCHAR2(32767);
+
+l_list json_list;
+A_id           VARCHAR2(200);
+UserId         VARCHAR2(100);
+UserName       VARCHAR2(100);
+OutletCode     VARCHAR2(100);
+OutletName     VARCHAR2(100);
+MobileNumber   VARCHAR2(100);
+PhoneNumber    VARCHAR2(100);
+Address        VARCHAR2(100);
+City           VARCHAR2(100);
+State          VARCHAR2(100);
+Postcode       VARCHAR2(100);
+Email          VARCHAR2(100);
+UpdateCount    VARCHAR2(100);
+loginCount     VARCHAR2(100);
+ReferencePhoto VARCHAR2(100);
+Updates        VARCHAR2(100);
+AccountLocked  VARCHAR2(100);
+Oracle_Flag    VARCHAR2(100);
+acl            VARCHAR2(100);
+
+
+BEGIN
+
+  -- service's input parameters
+
+  -- preparing Request...
+  l_http_request := UTL_HTTP.begin_request('https://api.appery.io/rest/1/db/collections/Outlet_Details?where=%7B%22Oracle_Flag%22%3A%22Y%22%7D'
+                                          , 'GET'
+                                          , 'HTTP/1.1');
+
+  -- ...set header's attributes
+  UTL_HTTP.set_header(l_http_request, 'X-Appery-Database-Id', '53f2dac5e4b02cca64021dbe');
+  --UTL_HTTP.set_header(l_http_request, 'Content-Length', LENGTH(l_param_list));
+
+  -- ...set input parameters
+ -- UTL_HTTP.write_text(l_http_request, l_param_list);
+
+  -- get Response and obtain received value
+  l_http_response := UTL_HTTP.get_response(l_http_request);
+
+  UTL_HTTP.read_text(l_http_response, l_response_text);
+
+  DBMS_OUTPUT.put_line(l_response_text);
+  l_list := json_list(l_response_text);
+
+FOR i IN 1..l_list.count
+LOOP
+  A_id           := json_ext.get_string(json(l_list.get(i)),'_id');
+  UserId         := json_ext.get_string(json(l_list.get(i)),'UserId');
+  UserName       := json_ext.get_string(json(l_list.get(i)),'UserName');
+  OutletCode     := json_ext.get_string(json(l_list.get(i)),'OutletCode');
+  OutletName     := json_ext.get_string(json(l_list.get(i)),'OutletName');
+  MobileNumber   := json_ext.get_string(json(l_list.get(i)),'MobileNumber');
+  PhoneNumber    := json_ext.get_string(json(l_list.get(i)),'PhoneNumber');
+  Address        := json_ext.get_string(json(l_list.get(i)),'Address');
+  City           := json_ext.get_string(json(l_list.get(i)),'City');
+  State          := json_ext.get_string(json(l_list.get(i)),'State');
+  Postcode       := json_ext.get_string(json(l_list.get(i)),'Postcode');
+  Email          := json_ext.get_string(json(l_list.get(i)),'Email');
+  UpdateCount    := json_ext.get_string(json(l_list.get(i)),'UpdateCount');
+  loginCount     := json_ext.get_string(json(l_list.get(i)),'loginCount');
+  ReferencePhoto := json_ext.get_string(json(l_list.get(i)),'ReferencePhoto');
+  Updates        := json_ext.get_string(json(l_list.get(i)),'Updates');
+  AccountLocked  := json_ext.get_string(json(l_list.get(i)),'AccountLocked');
+  Oracle_Flag    := json_ext.get_string(json(l_list.get(i)),'Oracle_Flag');
+  acl            := json_ext.get_string(json(l_list.get(i)),'acl');
+
+insert into 
+END LOOP;
+END;
+
+
+SELECT UTL_HTTP.REQUEST('http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaCode?ServiceKey=ZhnHJ1fzbYGAO2Xl%2FSg5MHWhMO0GkoIguiXKwi3%2BlAB8OTO1xYkmp0228On6RJ6lgh6Z4%2BLCWnAsnPm0wysTgA%3D%3D&areaCode=1&numOfRows=20&MobileOS=ETC&MobileApp=AppTesting') FROM DUAL;

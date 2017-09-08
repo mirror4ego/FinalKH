@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 다른 mapper와 중복되지 않도록 네임스페이스 기재 -->
+<mapper namespace="review">
+
+    <!-- 후기 작성 -->
+	<insert id="insert">
+		<!-- 글 번호를 시퀀스로 생성 -->
+		INSERT INTO t_reviewboard (
+		  boardnum, subject, writer, content, show, email
+		) VALUES (
+		   seq_review.NEXTVAL, #{subject}, #{writer}, #{content} , 'y', #{email}
+		)
+	</insert>
+    
+    <!-- 전체목록조회 -->
+    <select id="listAll" resultType="com.kh.web.model.travel.dto.ReviewVO" >
+    SELECT
+    	 boardnum, subject, content, regdate, viewcount, show, writer 
+	FROM
+		t_reviewboard
+    order by boardnum desc, regdate desc
+    </select>
+    
+    <!-- 후기 보기 -->
+    <select id="view" resultType="com.kh.web.model.travel.dto.ReviewVO">
+		<!-- SELECT * FROM tbl_board  -->
+		SELECT 
+			boardnum, subject, content, regdate, writer, viewcount, r.email, show
+		FROM 
+			t_reviewboard r, t_userinfo u
+		WHERE
+			r.email = u.email
+		AND
+			boardnum = #{boardnum}
+	</select>
+	<!-- 조회수 -->
+	<update id="viewcnt">
+		UPDATE 
+			t_reviewboard
+		SET 
+			viewcount = viewcount + 1 
+		WHERE 
+			boardnum = #{boardnum}
+	</update>
+	
+	<!-- 후기 수정 -->
+	<update id="update">
+	UPDATE
+		t_reviewboard
+	SET
+		subject = #{subject},
+		content = #{content}
+	WHERE
+		boardnum = #{boardnum}
+	</update>
+	
+	<!-- 후기 삭제 -->
+	<update id="deleteArticle">
+	UPDATE
+		t_reviewboard
+	SET
+		show = 'n'
+	WHERE
+		boardnum = #{boardnum}
+	</update>
+</mapper>

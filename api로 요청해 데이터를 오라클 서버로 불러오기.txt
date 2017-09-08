@@ -1,0 +1,22 @@
+DECLARE
+  req   UTL_HTTP.REQ;
+  resp  UTL_HTTP.RESP;
+  value VARCHAR2(1024);
+BEGIN
+req := UTL_HTTP.BEGIN_REQUEST('http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey=ZhnHJ1fzbYGAO2Xl%2FSg5MHWhMO0GkoIguiXKwi3%2BlAB8OTO1xYkmp0228On6RJ6lgh6Z4%2BLCWnAsnPm0wysTgA%3D%3D&MobileOS&MobileApp&NumOfRows&_type');
+  resp := UTL_HTTP.GET_RESPONSE(req);
+UTL_HTTP.SET_BODY_CHARSET('UTF-8');
+
+  LOOP
+    UTL_HTTP.READ_TEXT(resp, value);
+    DBMS_OUTPUT.PUT_LINE ( value );
+  END LOOP;
+EXCEPTION
+  WHEN UTL_HTTP.END_OF_BODY THEN
+  UTL_HTTP.END_RESPONSE(resp);
+END;
+/
+&MobileOS=ETC
+&MobileApp=AppTesting
+&numOfRows=26000
+&_type=json

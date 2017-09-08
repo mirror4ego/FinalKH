@@ -1,0 +1,515 @@
+--------------------------------------
+
+
+	-- DB 정보 인덱스
+		-- DB 테이블 구성
+		-- DB 시퀀스 구성
+		-- 테이블 세부 구조
+		-- DB 기본 사용 설정 세팅
+		-- DB 생성 정보
+			-- 테이블 생성
+			-- 시퀀스 생성
+			-- 외래키 설정
+			-- 기본 데이터 생성
+			-- 최종 COMMIT;
+
+
+--------------------------------------
+
+
+
+	-- DB정보
+		-- DB 테이블 구성
+			-- TBL_MEMBER
+			-- TBL_BOARD
+			-- TBL_REPLY
+			-- TBL_USER
+			-- TBL_MESSAGE
+			-- TBL_ATTACH
+			-- TBL_PRODUCT
+			-- TBL_CART
+			-- TBL_ADMIN
+						
+			
+		-- DB 시퀀스 구성	
+			-- MESSAGE_SEQ
+			-- REPLY_SEQ
+			-- SEQ_BOARD
+			-- SEQ_CART
+			-- SEQ_PRODUCT
+				
+		
+		-- 테이블 세부 구조
+			-- TBL_MEMBER
+				--USER_ID				NOT NULL VARCHAR2(50)	--PRIMARY KEY
+				--USER_PW				NOT NULL VARCHAR2(50)
+				--USER_NAME				NOT NULL VARCHAR2(50)
+				--USER_EMAIL			NOT NULL VARCHAR2(100)
+				--USER_REGDATE			DATE
+				--USER_UPDATEDATE		DATE
+			-- TBL_BOARD
+				--BNO					NOT NULL NUMBER			--PRIMARY KEY
+				--TITLE					NOT NULL VARCHAR2(200)
+				--CONTENT				VARCHAR2(4000)
+				--WRITER				NOT NULL VARCHAR2(50)	--TBL_MEMBER의 USER_ID 참조
+				--REGDATE				DATE
+				--VIEWCNT				NUMBER
+				--SHOW					CHAR(1)
+			-- TBL_REPLY
+				--RNO					NOT NULL NUMBER			--PRIMARY KEY
+				--BNO					NOT NULL NUMBER			--TBL_BOARD의 BNO 참조
+				--REPLYTEXT				VARCHAR2(1000)
+				--REPLYER				NOT NULL VARCHAR2(50)
+				--REGDATE				DATE
+				--UPDATEDATE			DATE
+				--SECRET_REPLY			CHAR(1)
+			-- TBL_USER
+				--USERID				NOT NULL VARCHAR2(50) 	--PRIMARY KEY
+				--USERPW				NOT NULL VARCHAR2(50)
+				--UNAME					NOT NULL VARCHAR2(100)
+				--UPOINT				NUMBER
+			-- TBL_MESSAGE
+				-- MID					NOT NULL NUMBER			--PRIMARY KEY
+				-- TARGETID				NOT NULL VARCHAR2(50)	--TBL_USER의 USERID 참조
+				-- SENDER				NOT NULL VARCHAR2(50)	--TBL_USER의 USERID 참조
+				-- MESSAGE				NOT NULL VARCHAR2(4000)
+				-- OPENDATE				DATE
+				-- SENDDATE				DATE
+			-- TBL_ATTACH
+				--FULLNAME				NOT NULL VARCHAR2(150)	--PRIMARY KEY
+				--BNO					NOT NULL NUMBER
+				--REGDATE				DATE
+			-- TBL_PRODUCT
+				--PRODUCT_ID			NOT NULL NUMBER			--PRIMARY KEY
+				--PRODUCT_NAME			VARCHAR2(50)
+				--PRODUCT_PRICE			NUMBER
+				--PRODUCT_DESC			VARCHAR2(500)
+				--PRODUCT_URL			VARCHAR2(500)
+			-- TBL_CART
+				--CART_ID				NOT NULL NUMBER			--PRIMARY KEY
+				--USER_ID				NOT NULL VARCHAR2(50)
+				--PRODUCT_ID			NOT NULL NUMBER
+				--AMOUNT				NUMBER
+			-- TBL_ADMIN
+				--USER_ID				NOT NULL VARCHAR2(50)	--PRIMARY KEY
+				--USER_PW				NOT NULL VARCHAR2(50)
+				--USER_NAME				NOT NULL VARCHAR2(50)
+				--USER_EMAIL			VARCHAR2(100)
+				--USER_REGDATE			DATE
+				--USER_UPDATEDATE		DATE
+
+
+		--DB세팅 관련 정보
+			----------주의 주의 주의 주의 주의 주의 주의 주의 주의 주의 -------------
+			-- 아래 코드는 해당 스키마의 모든 테이블, 시퀀스, 휴지통까지 지워버리는 명령 --
+			-- 데이터 베이스 생성 전 전체 테이블 구조와 데이터를 쉽게 삭제하고자 할 때 사용 --  
+			
+			-- sql>ed dropall.sql
+			
+			
+			
+			-- Begin
+			-- 		for c in (select table_name from user_tables)
+			-- 			loop
+			-- 				execute immediate ('drop table '||c.table_name||' cascade constraints');
+			-- 			end loop;
+			-- 		for c in (SELECT * FROM all_sequences WHERE SEQUENCE_OWNER='FINALKH')
+			-- 			loop
+			-- 				execute immediate 'drop SEQUENCE '||c.sequence_name;
+			-- 			end loop;
+			-- End;
+			-- /
+			-- purge recyclebin;
+			-- SELECT * FROM tab;
+			-- SELECT * FROM all_sequences WHERE SEQUENCE_OWNER='FINALKH';
+			
+			
+			
+			-- sql>@dropall.sql
+
+			
+			--- 위 코드는 해당 스키마의 모든 테이블, 시퀀스, 휴지통까지 지워버리는 명령 ---
+			----------주의 주의 주의 주의 주의 주의 주의 주의 주의 주의 -------------
+		
+		
+			-- 전체 테이블, 시퀀스 생성 쿼리를 이렇게 명령어로 저장해놓고 사용할 수도 있다
+			-- sql>ed createall.sql
+			-- 메모장에 아래의 쿼리 전체를 입력
+			-- sql>@createall.sql
+
+			
+			
+			
+----------------------------------------------------------------------------------------------			
+------------------------------------   아래의 내용을 붙여넣기 한다   ------------------------------------
+----------------------------------------------------------------------------------------------
+
+
+	-- DB 기본 사용 설정 세팅
+	SET LINESIZE 120;
+	SET SERVEROUTPUT ON;
+
+
+	-- 1. 멤버 관련 DB 정보
+		-- 멤버 테이블 생성
+		create table tbl_member(
+		user_id varchar2(50) not null,			-- 아이디
+		user_pw varchar2(100) not null,			-- 패스워드
+		user_name varchar2(50) not null,		-- 이름
+		user_email varchar2(100) not null,		-- 이메일
+		user_regdate date default sysdate,		-- 등록일
+		user_updatedate date default sysdate,	-- 수정일
+		primary key(user_id)					-- 기본키 설정
+		);
+	
+		-- 멤버 시퀀스 생성
+		-- 시퀀스 생성 필요 없음
+		
+		-- 멤버 외래키 설정
+		-- 외래키 설정 필요 없음
+	
+		-- 멤버 기본 데이터 생성
+		DECLARE
+			v_cnt NUMBER := 1;
+		BEGIN
+		DBMS_OUTPUT.ENABLE;
+		LOOP
+			insert into tbl_member (user_id, user_pw, user_name, user_email)
+			values ('member'||to_char(v_cnt), 'member'||to_char(v_cnt),
+				'멤버'||to_char(v_cnt), 'member'||to_char(v_cnt)||'@gmail.com');
+			v_cnt := v_cnt+1;
+			EXIT WHEN v_cnt > 100;
+		END LOOP;
+		DBMS_OUTPUT.PUT_LINE('데이터 입력 완료');
+		DBMS_OUTPUT.PUT_LINE(v_cnt-1 || '개의 데이터가 입력되었습니다');
+		END;
+		/
+	
+
+	-- 2. 게시판 관련 DB 정보
+		-- 게시판 테이블 생성
+		create table tbl_board(
+		bno number not null,			-- 게시물 번호
+		title varchar2(200) not null,	-- 제목
+		content varchar2(4000),			-- 내용
+		writer varchar2(50) not null,	-- 이름
+		regdate date default sysdate,	-- 작성일자  
+		viewcnt number default 0,		-- 조회수
+		show char(1) default 'y',		-- 게시글 표시 유무				
+		primary key(bno)				-- 기본키 설정
+		);
+	
+		-- 게시판 시퀀스 생성
+		CREATE SEQUENCE seq_board START WITH 1 INCREMENT BY 1;
+			
+		-- 외래키 설정
+		ALTER TABLE tbl_board ADD CONSTRAINT fk_board_writer
+		FOREIGN KEY(writer) REFERENCES tbl_member(user_id);
+		
+		-- 게시판 기본 데이터 생성
+		DECLARE
+			v_bcnt NUMBER := 1;
+			v_mcnt NUMBER := 1;
+		BEGIN
+		DBMS_OUTPUT.ENABLE ;
+		LOOP
+			v_bcnt := 1;
+			LOOP
+				insert into tbl_board (bno, title, content, writer)
+				values (seq_board.nextval,
+					'테스트 member'||to_char(v_mcnt)||' 사용자의 '||to_char(v_bcnt)|| '번째 게시물 제목',
+					'테스트 member'||to_char(v_mcnt)||' 사용자의 '||to_char(v_bcnt)|| '번째 게시물 내용',
+					'member'||to_char(v_mcnt));
+				v_bcnt := v_bcnt+1;
+				EXIT WHEN v_bcnt > 10;
+			END LOOP;
+			v_mcnt := v_mcnt+1;
+			EXIT WHEN v_mcnt > 100;
+		END LOOP;
+		DBMS_OUTPUT.PUT_LINE('데이터 입력 완료');
+		DBMS_OUTPUT.PUT_LINE((v_mcnt-1)*(v_bcnt-1) || '개의 데이터가 입력되었습니다');
+		END;
+		/
+
+
+	-- 3. 댓글 관련 DB 정보
+		-- 댓글 테이블 생성
+		create table tbl_reply(
+		rno number not null,              			-- 댓글 인덱스
+		bno number not null,              			-- 게시글 인덱스
+		replytext varchar2(1000),         			-- 댓글 내용
+		replyer varchar2(50) not null,    			-- 댓글 작성자
+		regdate date default sysdate,     			-- 댓글 등록일자  
+		updatedate date default sysdate,   			-- 댓글 수정일자  
+		secret_reply char(1) default 'n', 			-- 댓글 숨김여부
+		primary key(rno)	               			-- 기본키 설정
+		);
+	
+		-- 댓글 시퀀스 생성
+		CREATE SEQUENCE reply_seq START WITH 1 INCREMENT BY 1;
+		
+		-- 외래키 설정
+		ALTER TABLE tbl_reply ADD CONSTRAINT fk_reply_bno
+		FOREIGN KEY(bno) REFERENCES tbl_board(bno);
+		
+		-- 댓글 기본 데이터 생성
+		DECLARE
+			v_cnt NUMBER := 2;
+		BEGIN
+		DBMS_OUTPUT.ENABLE;
+		LOOP
+			insert into tbl_reply (rno, bno, replytext, replyer, secret_reply)
+			values (reply_seq.nextval, v_cnt, to_char(v_cnt)||'번째 댓글입니다',
+				'member1', 'n');
+			v_cnt := v_cnt+1;
+			EXIT WHEN v_cnt > 1001;
+		END LOOP;
+		DBMS_OUTPUT.PUT_LINE('데이터 입력 완료');
+		DBMS_OUTPUT.PUT_LINE(v_cnt-1 || '개의 데이터가 입력되었습니다');
+		END;
+		/
+		
+
+	-- 4. 사용자 관련 DB 정보
+		-- 사용자 테이블 생성
+	    CREATE TABLE tbl_user(
+	      userid VARCHAR2(50) NOT NULL,
+	      userpw VARCHAR2(50) NOT NULL,
+	      uname VARCHAR2(100) NOT NULL,
+	      upoint NUMBER DEFAULT 0,
+	      PRIMARY KEY(userid)
+	    );
+	    
+	    -- 사용자 시퀀스 생성
+	    -- 시퀀스 생성 필요 없음
+	    
+	    -- 사용자 외래키 설정
+	    -- 외래키 설정 필요 없음
+	    
+		-- 사용자 기본 데이터 생성
+		DECLARE
+			v_cnt NUMBER := 1;
+		BEGIN
+		DBMS_OUTPUT.ENABLE;
+		LOOP
+			insert into tbl_user (userid, userpw, uname)
+			values ('user'||to_char(v_cnt), 'user'||to_char(v_cnt), '유저'||to_char(v_cnt));
+			v_cnt := v_cnt+1;
+			EXIT WHEN v_cnt > 100;
+		END LOOP;
+		DBMS_OUTPUT.PUT_LINE('데이터 입력 완료');
+		DBMS_OUTPUT.PUT_LINE(v_cnt-1 || '개의 데이터가 입력되었습니다');
+		END;
+		/
+
+
+	-- 5. 메세지 관련 DB 정보
+		-- 메세지 테이블 생성
+	    CREATE TABLE tbl_message(
+	      mid NUMBER NOT NULL,
+	      targetid VARCHAR2(50) NOT NULL,
+	      sender VARCHAR2(50) NOT NULL,
+	      message VARCHAR2(4000) NOT NULL,
+	      opendate DATE,
+	      senddate DATE DEFAULT SYSDATE,
+	      PRIMARY KEY(mid)
+	    );
+	
+	    -- 메세지 시퀀스 생성
+	    CREATE SEQUENCE message_seq START WITH 1 INCREMENT BY 1;
+	    
+	    -- 외래키 설정
+	    ALTER TABLE tbl_message ADD CONSTRAINT fk_usersender
+	    	FOREIGN KEY (sender) REFERENCES tbl_user(userid);
+	    ALTER TABLE tbl_message ADD CONSTRAINT fk_usertarget
+	    	FOREIGN KEY (targetid) REFERENCES tbl_user(userid);
+	    
+		-- 메세지 기본 데이터 생성
+		DECLARE
+			v_cnt NUMBER := 1;
+		BEGIN
+		DBMS_OUTPUT.ENABLE;
+		LOOP
+			insert into tbl_message (mid, targetid, sender, message)
+			values (message_seq.nextval, 'user'||to_char(101-v_cnt), 'user'||to_char(v_cnt),
+				'유저'||to_char(v_cnt)||'님이 '||to_char(101-v_cnt)||'님에게 보낸 메세지입니다');
+			v_cnt := v_cnt+1;
+			EXIT WHEN v_cnt > 100;
+		END LOOP;
+		DBMS_OUTPUT.PUT_LINE('데이터 입력 완료');
+		DBMS_OUTPUT.PUT_LINE(v_cnt-1 || '개의 데이터가 입력되었습니다');
+		END;
+		/
+
+    -- 6. 첨부파일 관련 DB 정보
+		-- 첨부파일 테이블 생성
+		CREATE TABLE tbl_attach (
+		fullname VARCHAR2(150) NOT NULL,  -- 첨부파일 이름
+		bno NUMBER NOT NULL,              -- 게시물 번호
+		regdate DATE DEFAULT SYSDATE,     -- 업로드 날짜
+		PRIMARY KEY(fullname)
+		);
+		
+		-- 첨부파일 시퀀스 생성
+		-- 시퀀스 생성 필요 없음
+		
+		-- 외래키 설정
+		ALTER TABLE tbl_attach ADD CONSTRAINT fk_board_attch FOREIGN KEY(bno)
+			REFERENCES tbl_board(bno);
+			
+		-- 첨부파일 기본 데이터 생성
+		-- 기본 데이터 생성 필요 없음
+
+
+	-- 7. 상품 관련 DB 정보
+		-- 상품 테이블 생성
+		CREATE TABLE tbl_product (
+		product_id NUMBER,              -- 상품 번호
+		product_name VARCHAR2(50),      -- 상품 이름
+		product_price NUMBER DEFAULT 0, -- 상품 가격
+		product_desc VARCHAR2(500),     -- 상품 상세설명
+		product_url VARCHAR2(500),      -- 상품 사진
+		PRIMARY KEY(product_id)
+		);
+		
+		-- 상품 시퀀스 생성
+		CREATE SEQUENCE seq_product START WITH 1 INCREMENT BY 1;
+		
+		-- 상품 외래키 설정
+		-- 외래키 설정 필요 없음
+		
+		-- 상품 기본 데이터 생성
+		INSERT INTO tbl_product VALUES (seq_product.nextval,'김치전사',50000,'김치 특가할인 중입니다.','kimchi.png');
+		INSERT INTO tbl_product VALUES (seq_product.nextval,'나이키',100000,'나이키 2017년 신상제품입니다.','nike.png');
+		INSERT INTO tbl_product VALUES (seq_product.nextval,'아디다스',80000,'아디다스의 스테디 셀러!','adidas.png');
+		INSERT INTO tbl_product VALUES (seq_product.nextval,'뉴발란스',110000,'뉴발란스의 2016년 최고의 신발','newbalance.png');
+		INSERT INTO tbl_product VALUES (seq_product.nextval,'푸마',98000,'푸마 30프로 특가할인 제품입니다.','puma.png');
+		INSERT INTO tbl_product VALUES (seq_product.nextval,'팀버랜드',150000,'팀버랜드 스테디 셀러! 특별할인 중입니다.','timberland.png');
+		INSERT INTO tbl_product VALUES (seq_product.nextval,'락포트',99000,'편안한 로퍼 락포트입니다.','rockport.png');
+		INSERT INTO tbl_product VALUES (seq_product.nextval,'리복',120000,'2017 신상 퓨리 입고되었습니다.','reebok.png');
+		INSERT INTO tbl_product VALUES (seq_product.nextval,'컨버스',60000,'컨버스 특가할인 중입니다.','converse.png');
+
+	
+	-- 8. 장바구니 관련 DB 정보
+		-- 장바구니 테이블 생성
+		CREATE TABLE tbl_cart(
+		cart_id NUMBER NOT NULL PRIMARY KEY,
+		user_id VARCHAR2(50) NOT NULL,
+		product_id NUMBER NOT NULL,
+		amount NUMBER DEFAULT 0
+		);
+		
+		-- 장바구니 시퀀스 생성
+		CREATE SEQUENCE seq_cart START WiTH 1 INCREMENT BY 1;
+	
+		-- 장바구니 외래키 설정
+		ALTER TABLE tbl_cart ADD CONSTRAINT cart_userid_fk FOREIGN KEY(user_id)
+			REFERENCES tbl_member(user_id);
+		ALTER TABLE tbl_cart ADD CONSTRAINT cart_product_fk FOREIGN KEY(product_id)
+			REFERENCES tbl_product(product_id);
+		
+		-- 장바구니 기본 데이터 생성
+		DECLARE
+			v_pcnt NUMBER := 2;
+			v_mcnt NUMBER := 1;
+		BEGIN
+		DBMS_OUTPUT.ENABLE;
+		LOOP
+			v_pcnt := 2;
+			LOOP
+				insert into tbl_cart (cart_id, user_id, product_id, amount)
+				values (seq_cart.nextval, 'member'||to_char(v_mcnt), v_pcnt, 10);
+				v_pcnt := v_pcnt+1;
+				EXIT WHEN v_pcnt > 9;
+			END LOOP;
+			v_mcnt := v_mcnt+1;
+			EXIT WHEN v_mcnt > 100;
+		END LOOP;	
+
+		DBMS_OUTPUT.PUT_LINE('데이터 입력 완료');
+		DBMS_OUTPUT.PUT_LINE((v_pcnt-1)*(v_mcnt-1) || '개의 데이터가 입력되었습니다');
+		END;
+		/
+		
+		
+	-- 9. 관리자 관련 DB 정보
+	
+		-- 관리자 테이블 생성
+		CREATE TABLE tbl_admin (
+		    user_id VARCHAR(50) NOT NULL,
+		    user_pw VARCHAR(50) NOT NULL,
+		    user_name VARCHAR(50) NOT NULL,
+		    user_email VARCHAR(100),
+		    user_regdate DATE DEFAULT SYSDATE,
+		    user_updatedate DATE DEFAULT SYSDATE,
+		    PRIMARY KEY(user_id)
+		);
+		
+		-- 관리자 시퀀스 생성
+		-- 시퀀스 생성 필요 없음
+		
+		-- 외래키 설정
+		-- 외래키 설정 필요 없음
+		
+		-- 관리자 기본 데이터 생성
+		INSERT INTO tbl_admin (user_id, user_pw, user_name, user_email)
+		VALUES ('kh', 'kh', '관리자', 'kh@kh.com');
+		
+
+
+	-- 테스트 모음 --	
+	-- 1. 멤버 테스트 쿼리
+	SELECT COUNT(*) FROM tbl_member;		
+	-- 총 데이터가 100개라면 성공적으로 입력 된 것
+	
+	-- 2. 게시판 테스트 쿼리
+	SELECT COUNT(*) FROM tbl_board;
+	-- 총 데이터가 1000개라면 성공적으로 입력 된 것
+
+	-- 3. 댓글 테스트 쿼리
+	SELECT COUNT(*) FROM tbl_reply;
+	-- 총 데이터가 1000개라면 성공적으로 입력 된 것
+
+	-- 4. 사용자 테스트 쿼리
+	SELECT COUNT(*) FROM tbl_user;
+	-- 총 데이터가 100개라면 성공적으로 입력 된 것
+	
+	-- 5. 메세지 테스트 쿼리
+	SELECT COUNT(*) FROM tbl_message;
+	-- 총 데이터가 100개라면 성공적으로 입력 된 것
+	
+	-- 6. 첨부파일 테스트 쿼리
+	SELECT COUNT(*) FROM tbl_attach;
+	-- 총 데이터가 0개라면 성공적으로 입력 된 것
+
+	-- 7. 상품 테스트 쿼리
+	SELECT COUNT(*) FROM tbl_product;
+	-- 총 데이터가 9개라면 성공적으로 입력 된 것	
+		
+	-- 8. 장바구니 테스트 쿼리
+	SELECT COUNT(*) FROM tbl_cart;
+	-- 총 데이터가 800개라면 성공적으로 입력 된 것
+	
+	-- 9. 관리자 테스트 쿼리
+	SELECT COUNT(*) FROM tbl_admin;
+	-- 총 데이터가 1개라면 성공적으로 입력 된 것
+
+
+	
+	-- @ 최종 테이블, 시퀀스 구조 확인
+	SELECT * FROM tab;
+	SELECT * FROM all_sequences WHERE SEQUENCE_OWNER='FINALKH';
+	
+	
+	-- ****최종 커밋****
+	-- commit; -- 커밋 명령은 수동으로 입력하세요
+
+
+
+
+
+---------------------------------------------------------------------------------------------	
+---------------------------------------------------------------------------------------------	
+---------------------------------------------------------------------------------------------	
+---------------------------------------------------------------------------------------------	
+---------------------------------------------------------------------------------------------	

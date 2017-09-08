@@ -1,0 +1,32 @@
+begin
+        dbms_network_acl_admin.create_acl (
+                acl             => 'api.xml',
+                description     => 'Normal Access',
+                principal       => 'FINALKH',
+                is_grant        => TRUE,
+                privilege       => 'connect',
+                start_date      => null,
+                end_date        => null
+        );
+end;
+
+
+
+begin
+  dbms_network_acl_admin.add_privilege ( 
+  acl 		=> 'api.xml',
+  principal 	=> 'FINALKH',
+  is_grant 	=> TRUE, 
+  privilege 	=> 'connect', 
+  start_date 	=> null, 
+  end_date 	=> null); 
+end;
+
+
+begin
+  dbms_network_acl_admin.assign_acl (
+  acl => 'api.xml',
+  host => 'api.visitkorea.or.kr',
+  lower_port => 1,
+  upper_port => 9999);
+end;

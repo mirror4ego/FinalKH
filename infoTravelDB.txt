@@ -1,0 +1,1071 @@
+﻿--------------------------------------
+
+
+	-- DB 정보 인덱스
+		-- DB 테이블 구성
+		-- DB 시퀀스 구성
+		-- 테이블 세부 구조
+		-- DB 기본 사용 설정 세팅
+		-- DB 생성 정보
+			-- 테이블 생성
+			-- 시퀀스 생성
+			-- 외래키 설정
+			-- 기본 데이터 생성
+			-- 최종 COMMIT;
+
+
+--------------------------------------
+
+
+
+	-- DB정보
+		-- DB 테이블 구성
+			-- KH_AREA
+
+						
+			
+		-- DB 시퀀스 구성	
+			-- 
+
+				
+		
+		-- 테이블 세부 구조
+			-- KH_AREA
+				--USER_ID				NOT NULL VARCHAR2(50)	--PRIMARY KEY
+				--USER_PW				NOT NULL VARCHAR2(50)
+				--USER_NAME				NOT NULL VARCHAR2(50)
+				--USER_EMAIL			NOT NULL VARCHAR2(100)
+				--USER_REGDATE			DATE
+				--USER_UPDATEDATE		DATE
+			
+
+
+		--DB세팅 관련 정보
+			----------주의 주의 주의 주의 주의 주의 주의 주의 주의 주의 -------------
+			-- 아래 코드는 해당 스키마의 모든 테이블, 시퀀스, 휴지통까지 지워버리는 명령 --
+			-- 데이터 베이스 생성 전 전체 테이블 구조와 데이터를 쉽게 삭제하고자 할 때 사용 --  
+			
+			-- sql>ed dropall.sql
+			
+			
+			
+			-- Begin
+			-- 		for c in (select table_name from user_tables)
+			-- 			loop
+			-- 				execute immediate ('drop table '||c.table_name||' cascade constraints');
+			-- 			end loop;
+			-- 		for c in (SELECT * FROM all_sequences WHERE SEQUENCE_OWNER='SCOTT')
+			-- 			loop
+			-- 				execute immediate 'drop SEQUENCE '||c.sequence_name;
+			-- 			end loop;
+			-- End;
+			-- /
+			-- purge recyclebin;
+			-- SELECT * FROM tab;
+			-- SELECT * FROM all_sequences WHERE SEQUENCE_OWNER='SCOTT';
+			
+			
+			
+			-- sql>@dropall.sql
+
+			
+			--- 위 코드는 해당 스키마의 모든 테이블, 시퀀스, 휴지통까지 지워버리는 명령 ---
+			----------주의 주의 주의 주의 주의 주의 주의 주의 주의 주의 -------------
+		
+		
+			-- 전체 테이블, 시퀀스 생성 쿼리를 이렇게 명령어로 저장해놓고 사용할 수도 있다
+			-- sql>ed createall.sql
+			-- 메모장에 아래의 쿼리 전체를 입력
+			-- sql>@createall.sql
+
+		update T_Area set AreaImage = 'http://img.earthtory.com/img/city_images/310/seoul_1425373106.jpg' where AreaCode='1';
+		update T_Area set AreaImage = 'https://img-wishbeen.akamaized.net/plan/1435194648611_4582757611_efcc7cf8be_o.jpg' where AreaCode='2';
+		update T_Area set AreaImage = 'http://mw2.google.com/mw-panoramio/photos/medium/55499884.jpg' where AreaCode='3';
+		update T_Area set AreaImage = 'http://mw2.google.com/mw-panoramio/photos/medium/40704282.jpg' where AreaCode='4';
+		update T_Area set AreaImage = 'http://mw2.google.com/mw-panoramio/photos/medium/8532958.jpg' where AreaCode='5';
+		update T_Area set AreaImage = 'http://img.earthtory.com/img/city_images/311/busan_1425371432.jpg' where AreaCode='6';
+		update T_Area set AreaImage = 'http://cfile25.uf.tistory.com/image/2066AB374E6A06C00EA384' where AreaCode='7';
+		update T_Area set AreaImage = 'http://mw2.google.com/mw-panoramio/photos/medium/102904133.jpg' where AreaCode='8';
+		update T_Area set AreaImage = 'http://www.earthtory.com/res/img/city/ko_state/ko_10208.jpg' where AreaCode='31';
+		update T_Area set AreaImage = 'http://www.earthtory.com/res/img/city/ko_state/ko_10209.jpg' where AreaCode='32';
+		update T_Area set AreaImage = 'http://www.earthtory.com/res/img/city/ko_state/ko_10210.jpg' where AreaCode='33';
+		update T_Area set AreaImage = 'http://www.earthtory.com/res/img/city/ko_state/ko_10211.jpg' where AreaCode='34';
+		update T_Area set AreaImage = 'http://www.earthtory.com/res/img/city/ko_state/ko_10212.jpg' where AreaCode='35'; 
+		update T_Area set AreaImage = 'http://www.earthtory.com/res/img/city/ko_state/ko_10213.jpg' where AreaCode='36';
+		update T_Area set AreaImage = 'http://www.earthtory.com/res/img/city/ko_state/ko_10214.jpg' where AreaCode='37';
+		update T_Area set AreaImage = 'http://www.earthtory.com/res/img/city/ko_state/ko_10215.jpg' where AreaCode='38';
+		update T_Area set AreaImage = 'http://img.earthtory.com/img/city_images/312/jeju_1425527708.jpg' where AreaCode='39';
+			
+			
+----------------------------------------------------------------------------------------------			
+------------------------------------   아래의 내용을 붙여넣기 한다   ------------------------------------
+----------------------------------------------------------------------------------------------
+
+
+	-- DB 기본 사용 설정 세팅
+	SET LINESIZE 120;
+	SET SERVEROUTPUT ON;
+
+
+	-- 1. 지역 관련 DB 정보
+		-- 지역 테이블 생성
+		create table T_Area(
+		AreaCode varchar2(10) not null,		-- 지역코드
+		AreaName varchar2(50) not null,		-- 지역이름
+		AreaMapX varchar2(10) not null,		-- 지역경도
+		AreaMapY varchar2(10) not null,		-- 지역위도
+		AreaImage  varchar2(200) not null,	-- 지역 이미지
+		primary key(AreaCode)				-- 기본키 설정
+		);
+	
+		-- 시도지역 시퀀스 생성
+		-- 시퀀스 생성 필요 없음
+		
+		-- 시도지역 외래키 설정
+		-- 외래키 설정 필요 없음
+	
+		-- 시도지역 기본 데이터 생성
+		insert into T_Area values ('1', '서울', '126.984028', '37.544085', 'http://img.earthtory.com/img/city_images/310/seoul_1425373106.jpg');
+		insert into T_Area values ('2', '인천', '126.607680', '37.591575', 'https://img-wishbeen.akamaized.net/plan/1435194648611_4582757611_efcc7cf8be_o.jpg');
+		insert into T_Area values ('3', '대전', '127.399092', '36.342052', 'http://mw2.google.com/mw-panoramio/photos/medium/55499884.jpg');
+		insert into T_Area values ('4', '대구', '128.568285', '35.845876', 'http://mw2.google.com/mw-panoramio/photos/medium/40704282.jpg');
+		insert into T_Area values ('5', '광주', '126.835549', '35.154133', 'http://mw2.google.com/mw-panoramio/photos/medium/8532958.jpg');
+		insert into T_Area values ('6', '부산', '129.077638', '35.202122', 'http://img.earthtory.com/img/city_images/311/busan_1425371432.jpg');
+		insert into T_Area values ('7', '울산', '129.228810', '35.572096', 'http://cfile25.uf.tistory.com/image/2066AB374E6A06C00EA384');
+		insert into T_Area values ('8', '세종', '127.267336', '36.553425', 'http://mw2.google.com/mw-panoramio/photos/medium/102904133.jpg');
+		insert into T_Area values ('31', '경기도', '127.342078', '37.484153', 'http://www.earthtory.com/res/img/city/ko_state/ko_10208.jpg');
+		insert into T_Area values ('32', '강원도', '128.268018', '37.836673', 'http://www.earthtory.com/res/img/city/ko_state/ko_10209.jpg');
+		insert into T_Area values ('33', '충청북도', '127.719236', '36.737902', 'http://www.earthtory.com/res/img/city/ko_state/ko_10210.jpg');
+		insert into T_Area values ('34', '충청남도', '126.891799', '36.546952', 'http://www.earthtory.com/res/img/city/ko_state/ko_10211.jpg');
+		insert into T_Area values ('35', '경상북도', '128.686032', '36.477738', 'http://www.earthtory.com/res/img/city/ko_state/ko_10212.jpg'); 
+		insert into T_Area values ('36', '경상남도', '128.291687', '35.314592', 'http://www.earthtory.com/res/img/city/ko_state/ko_10213.jpg');
+		insert into T_Area values ('37', '전라북도', '127.152512', '35.717951', 'http://www.earthtory.com/res/img/city/ko_state/ko_10214.jpg');
+		insert into T_Area values ('38', '전라남도', '126.923376', '34.900833', 'http://www.earthtory.com/res/img/city/ko_state/ko_10215.jpg');
+		insert into T_Area values ('39', '제주도', '126.541411', '33.387009', 'http://img.earthtory.com/img/city_images/312/jeju_1425527708.jpg');
+		
+
+		
+		
+	-- 2. 시군구지역 관련 DB 정보
+		-- 시군구지역 테이블 생성
+		create table T_SiGunGu(
+		SiGunGuSerialNum varchar2(10),		-- 시군구일련번호
+		AreaCode varchar2(10) not null,		-- 지역코드
+		SiGunGuCode varchar2(10) not null,	-- 시군구코드
+		SiGunGuName varchar2(50) not null,	-- 시군구이름
+		SiGunGuMapX varchar2(10),			-- 시군구경도
+		SiGunGuMapY varchar2(10),			-- 시군구위도
+		primary key(SiGUnGuSerialNum)		-- 기본키 설정
+		);
+	
+		-- 시군구지역 시퀀스 생성
+		CREATE sequence Seq_SiGunGu start with 1 increment by 1;
+		
+		-- 시군구지역 외래키 설정
+		ALTER TABLE T_SiGunGu ADD CONSTRAINT Fk_SiGunGu FOREIGN KEY(AreaCode) REFERENCES T_Area(AreaCode);
+	
+		-- 시군지역 기본 데이터 생성
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '1', '강남구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '2', '강동구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '3', '강북구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '4', '강서구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '5', '관악구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '6', '광진구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '7', '구로구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '8', '금천구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '9', '노원구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '10', '도봉구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '11', '동대문구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '12', '동작구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '13', '마포구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '14', '서대문구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '15', '서초구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '16', '성동구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '17', '성북구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '18', '송파구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '19', '양천구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '20', '영등포구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '21', '용산구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '22', '은평구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '23', '종로구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '24', '중구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '25', '중랑구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '1', '99', '서울', '', '');
+		
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '2', '1', '강화군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '2', '2', '계양구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '2', '3', '남구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '2', '4', '남동구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '2', '5', '동구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '2', '6', '부평구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '2', '7', '서구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '2', '8', '연수구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '2', '9', '옹진군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '2', '10', '중구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '2', '99', '인천', '', '');
+		
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '3', '1', '대덕구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '3', '2', '동구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '3', '3', '서구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '3', '4', '유성구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '3', '5', '중구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '3', '99', '대전', '', '');
+
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '4', '1', '남구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '4', '2', '달서구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '4', '3', '달성군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '4', '4', '동구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '4', '5', '북구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '4', '6', '서구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '4', '7', '수성구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '4', '8', '중구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '4', '99', '대구', '', '');
+
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '5', '1', '광산구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '5', '2', '남구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '5', '3', '동구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '5', '4', '북구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '5', '5', '서구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '5', '99', '광주', '', '');
+
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '6', '1', '강서구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '6', '2', '금정구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '6', '3', '기장군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '6', '4', '남구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '6', '5', '동구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '6', '6', '동래구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '6', '7', '부산진구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '6', '8', '북구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '6', '9', '사상구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '6', '10', '사하구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '6', '11', '서구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '6', '12', '수영구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '6', '13', '연제구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '6', '14', '영도구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '6', '15', '중구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '6', '16', '해운대구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '6', '99', '부산', '', '');
+
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '7', '1', '중구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '7', '2', '남구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '7', '3', '동구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '7', '4', '북구', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '7', '5', '울주군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '7', '99', '울산', '', '');
+
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '8', '1', '세종특별자치시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '8', '99', '세종특별자치시', '', '');
+
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '1', '가평군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '2', '고양시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '3', '과천시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '4', '광명시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '5', '광주시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '6', '구리시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '7', '군포시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '8', '김포시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '9', '남양주시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '10', '동두천시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '11', '부천시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '12', '성남시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '13', '수원시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '14', '시흥시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '15', '안산시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '16', '안성시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '17', '안양시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '18', '양주시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '19', '양평군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '20', '여주시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '21', '연천군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '22', '오산시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '23', '용인시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '24', '의왕시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '25', '의정부시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '26', '이천시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '27', '파주시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '28', '평택시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '29', '포천시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '30', '하남시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '31', '화성시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '31', '99', '경기도', '', '');
+
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '32', '1', '강릉시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '32', '2', '고성군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '32', '3', '동해시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '32', '4', '삼척시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '32', '5', '속초시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '32', '6', '양구군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '32', '7', '양양군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '32', '8', '영월군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '32', '9', '원주시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '32', '10', '인제군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '32', '11', '정선군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '32', '12', '철원군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '32', '13', '춘천시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '32', '14', '태백시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '32', '15', '평창군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '32', '16', '홍천군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '32', '17', '화천군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '32', '18', '횡성군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '32', '99', '강원도', '', '');
+
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '33', '1', '괴산군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '33', '2', '단양군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '33', '3', '보은군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '33', '4', '영동군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '33', '5', '옥천군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '33', '6', '음성군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '33', '7', '제천시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '33', '8', '진천군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '33', '9', '청원군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '33', '10', '청주시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '33', '11', '충주시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '33', '12', '증평군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '33', '99', '충청북도', '', '');
+
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '34', '1', '공주시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '34', '2', '금산군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '34', '3', '논산시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '34', '4', '당진시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '34', '5', '보령시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '34', '6', '부여군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '34', '7', '서산시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '34', '8', '서천군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '34', '9', '아산시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '34', '11', '예산군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '34', '12', '천안시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '34', '13', '청양군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '34', '14', '태안군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '34', '15', '홍성군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '34', '16', '계룡시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '34', '99', '충청남도', '', '');
+
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '1', '경산시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '2', '경주시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '3', '고령군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '4', '구미시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '5', '군위군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '6', '김천시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '7', '문경시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '8', '봉화군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '9', '상주시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '10', '성주군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '11', '안동시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '12', '영덕군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '13', '영양군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '14', '영주시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '15', '영천시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '16', '예천군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '17', '울릉군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '18', '울진군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '19', '의성군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '20', '청도군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '21', '청송군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '22', '칠곡군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '23', '포항시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '35', '99', '경상북도', '', '');
+
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '1', '거제시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '2', '거창군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '3', '고성군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '4', '김해시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '5', '남해군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '6', '마산시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '7', '밀양시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '8', '사천시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '9', '산청군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '11', '양산시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '12', '의령군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '13', '진주시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '14', '진해시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '15', '창녕군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '16', '창원시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '17', '통영시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '18', '하동군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '19', '함안군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '20', '함양군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '21', '합천군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '36', '99', '경상남도', '', '');
+
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '37', '1', '고창군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '37', '2', '군산시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '37', '3', '김제시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '37', '4', '남원시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '37', '5', '무주군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '37', '6', '부안군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '37', '7', '순창군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '37', '8', '완주군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '37', '9', '익산시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '37', '10', '임실군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '37', '11', '장수군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '37', '12', '전주시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '37', '13', '정읍시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '37', '14', '진안군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '37', '99', '전라북도', '', '');
+
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '1', '강진군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '2', '고흥군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '3', '곡성군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '4', '광양시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '5', '구례군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '6', '나주시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '7', '담양군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '8', '목포시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '9', '무안군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '10', '보성군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '11', '순천시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '12', '신안군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '13', '여수시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '16', '영광군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '17', '영암군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '18', '완도군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '19', '장성군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '20', '장흥군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '21', '진도군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '22', '함평군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '23', '해남군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '24', '화순군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '38', '99', '전라남도', '', '');
+
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '39', '1', '남제주군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '39', '2', '북제주군', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '39', '3', '서귀포시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '39', '4', '제주시', '', '');
+		insert into T_SiGunGu values (Seq_SiGunGu.nextval, '39', '99', '제주도', '', '');
+
+
+
+	-- 3. 컨텐츠타입 관련 DB 정보
+		-- 컨텐츠타입 테이블 생성
+		create table T_ContentType(
+		ContentTypeId varchar2(10) not null,	 	-- 컨텐츠타입 ID
+		ContentTypeName varchar2(50) not null,		-- 컨텐츠타입 이름
+		primary key(ContentTypeId)					-- 기본키 설정
+		);
+	
+		-- 컨텐츠타입 시퀀스 생성
+		-- 시퀀스 생성 필요 없음
+		
+		-- 컨텐츠타입 외래키 설정
+		-- 외래키 설정 필요 없음
+		
+		-- 컨텐츠타입 기본 데이터 생성
+		insert into T_ContentType values ('12', '관광지');
+		insert into T_ContentType values ('14', '문화시설');
+		insert into T_ContentType values ('15', '축제/공연/행사');
+		insert into T_ContentType values ('25', '여행코스');
+		insert into T_ContentType values ('28', '레포츠');
+		insert into T_ContentType values ('32', '숙박');
+		insert into T_ContentType values ('38', '쇼핑');
+		insert into T_ContentType values ('39', '음식');
+
+
+		
+	-- 4. 카테코리1 관련 DB 정보
+		-- 카테코리1 테이블 생성
+		create table T_Cat1(
+		Cat1Code varchar2(10) not null,	 		-- 카테코리1 코드
+		Cat1Name varchar2(50) not null,			-- 카테코리1 이름
+		primary key(Cat1Code)					-- 기본키 설정
+		);
+	
+		-- 카테코리1 시퀀스 생성
+		-- 시퀀스 생성 필요 없음
+		
+		-- 카테코리1 외래키 설정
+		-- 외래키 생성 필요 없음
+		
+		-- 카테고리1 기본데이터 설정
+		insert into T_Cat1 values ('A01', '자연');
+		insert into T_Cat1 values ('A02', '인문(문화/예술/역사)');
+		insert into T_Cat1 values ('C01', '추천코스');
+		insert into T_Cat1 values ('A03', '레포츠');
+		insert into T_Cat1 values ('B02', '숙박');
+		insert into T_Cat1 values ('A04', '쇼핑');
+		insert into T_Cat1 values ('A05', '음식');
+				
+
+		
+	-- 5. 카테코리2 관련 DB 정보
+		-- 카테코리2 테이블 생성
+		create table T_Cat2(
+		Cat2Code varchar2(10) not null,	 		-- 카테코리2 코드
+		Cat2Name varchar2(50) not null,			-- 카테코리2 이름
+		Cat1Code varchar2(10) not null,	 		-- 카테코리1 코드 참조칼럼
+		ContentTypeId varchar2(10) not null,	-- 컨텐트타입ID 참조칼럼
+		primary key(Cat2Code)					-- 기본키 설정
+		);
+	
+		-- 카테코리2 시퀀스 생성
+		-- 시퀀스 생성 필요 없음
+		
+		-- 카테코리2 외래키 설정
+		ALTER TABLE T_Cat2 ADD CONSTRAINT Fk_Cat2Cat1Code FOREIGN KEY(Cat1Code) REFERENCES T_Cat1(Cat1Code);
+		ALTER TABLE T_Cat2 ADD CONSTRAINT Fk_Cat2ContentTypeId FOREIGN KEY(ContentTypeId) REFERENCES T_ContentType(ContentTypeId);
+		
+		-- 카테고리2 기본데이터 설정
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('12', 'A01', 'A0101', '자연관광지');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('12', 'A01', 'A0102', '관광자원');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('12', 'A02', 'A0201', '역사관광지');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('12', 'A02', 'A0202', '휴양관광지');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('12', 'A02', 'A0203', '체험관광지');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('12', 'A02', 'A0204', '산업관광지');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('12', 'A02', 'A0205', '건축/조형물');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('14', 'A02', 'A0206', '문화시설');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('15', 'A02', 'A0207', '축제');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('15', 'A02', 'A0208', '공연/행사');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('25', 'C01', 'C0112', '가족코스');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('25', 'C01', 'C0113', '나홀로코스');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('25', 'C01', 'C0114', '힐링코스,');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('25', 'C01', 'C0115', '도보코스');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('25', 'C01', 'C0116', '캠핑코스');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('25', 'C01', 'C0117', '맛코스');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('28', 'A03', 'A0301', '레포츠소개');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('28', 'A03', 'A0302', '육상 레포츠');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('28', 'A03', 'A0303', '수상 레포츠');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('28', 'A03', 'A0304', '항공 레포츠');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('28', 'A03', 'A0305', '복합 레포츠');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('32', 'B02', 'B0201', '숙박시설');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('38', 'A04', 'A0401', '쇼핑');
+		insert into T_Cat2 (ContentTypeId, Cat1Code, Cat2Code, Cat2Name) values ('39', 'A05', 'A0502', '음식점');
+
+		
+	-- 6. 카테고리3 관련 DB 정보
+		-- 카테코리3 테이블 생성
+		create table T_Cat3 (
+		Cat3Code varchar2(10) not null,	 		-- 카테코리3 코드
+		Cat3Name varchar2(50) not null,			-- 카테코리3 이름
+		Cat2Code varchar2(10) not null,	 		-- 카테코리2 코드 참조칼럼
+		primary key(Cat3Code)					-- 기본키 설정
+		);
+	
+		-- 카테코리3 시퀀스 생성
+		-- 시퀀스 생성 필요 없음
+		
+		-- 카테코리3 외래키 설정
+		ALTER TABLE T_Cat3 ADD CONSTRAINT Fk_Cat3 FOREIGN KEY(Cat2Code) REFERENCES T_Cat2(Cat2Code);
+	
+		-- 카테고리3 기본데이터 설정
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0101', 'A01010100', '국립공원');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0101', 'A01010200', '도립공원');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0101', 'A01010300', '군립공원');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0101', 'A01010400', '산');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0101', 'A01010500', '자연생태관광지');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0101', 'A01010600', '자연휴양림');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0101', 'A01010700', '수목원');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0101', 'A01010800', '폭포');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0101', 'A01010900', '계곡');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0101', 'A01011000', '약수터');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0101', 'A01011100', '해안절경');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0101', 'A01011200', '해수욕장');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0101', 'A01011300', '섬');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0101', 'A01011400', '항구/포구');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0101', 'A01011500', '어촌');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0101', 'A01011600', '등대');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0101', 'A01011700', '호수');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0101', 'A01011800', '강');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0101', 'A01011900', '동굴');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0102', 'A01020100', '희귀동.식물');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0102', 'A01020200', '기암괴석');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0201', 'A02010100', '고궁');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0201', 'A02010200', '성');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0201', 'A02010300', '문');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0201', 'A02010400', '고택');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0201', 'A02010500', '생가');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0201', 'A02010600', '민속마을');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0201', 'A02010700', '유적지/사적지');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0201', 'A02010800', '사찰');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0201', 'A02010900', '종교성지');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0201', 'A02011000', '안보관광');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0202', 'A02020100', '유원지');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0202', 'A02020200', '관광단지');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0202', 'A02020300', '온천/욕장/스파');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0202', 'A02020400', '이색찜질방');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0202', 'A02020500', '헬스투어');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0202', 'A02020600', '테마공원');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0202', 'A02020700', '공원');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0202', 'A02020800', '유람선/잠수함관광');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0203', 'A02030100', '농.산.어촌 체험');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0203', 'A02030200', '전통체험');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0203', 'A02030300', '산사체험');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0203', 'A02030400', '이색체험');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0203', 'A02030500', '관광농원');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0203', 'A02030600', '이색거리');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0204', 'A02040100', '제철소');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0204', 'A02040200', '조선소');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0204', 'A02040300', '공단');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0204', 'A02040400', '발전소');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0204', 'A02040500', '광산');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0204', 'A02040600', '식음료');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0204', 'A02040700', '화학/금속');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0204', 'A02040800', '기타');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0204', 'A02040900', '전자/반도체');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0204', 'A02041000', '자동차');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0205', 'A02050100', '다리/대교');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0205', 'A02050200', '기념탑/기념비/전망대');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0205', 'A02050300', '분수');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0205', 'A02050400', '동상');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0205', 'A02050500', '터널');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0205', 'A02050600', '유명건물');
+		
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0206', 'A02060100', '박물관');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0206', 'A02060200', '기념관');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0206', 'A02060300', '전시관');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0206', 'A02060400', '컨벤션센터');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0206', 'A02060500', '미술관/화랑');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0206', 'A02060600', '공연장');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0206', 'A02060700', '문화원');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0206', 'A02060800', '외국문화원');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0206', 'A02060900', '도서관');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0206', 'A02061000', '대형서점');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0206', 'A02061100', '문화전수시설');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0206', 'A02061200', '영화관');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0206', 'A02061300', '어학당');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0206', 'A02061400', '학교');
+		
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0207', 'A02070100', '문화관광축제');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0207', 'A02070200', '일반축제');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0208', 'A02080100', '전통공연');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0208', 'A02080200', '연극');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0208', 'A02080300', '뮤지컬');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0208', 'A02080400', '오페라');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0208', 'A02080500', '전시회');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0208', 'A02080600', '박람회');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0208', 'A02080700', '컨벤션');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0208', 'A02080800', '무용');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0208', 'A02080900', '클래식음악회');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0208', 'A02081000', '대중콘서트');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0208', 'A02081100', '영화');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0208', 'A02081200', '스포츠경기');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0208', 'A02081300', '기타행사');
+		
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('C0112', 'C01120001', '가족코스');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('C0113', 'C01130001', '나홀로코스');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('C0114', 'C01140001', '힐링코스');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('C0115', 'C01150001', '도보코스');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('C0116', 'C01160001', '캠핑코스');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('C0117', 'C01170001', '맛코스');
+		
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0301', 'A03010100', '육상레포츠');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0301', 'A03010200', '수상레포츠');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0301', 'A03010300', '항공레포츠');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03020100', '스포츠센터');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03020200', '수련시설');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03020300', '경기장');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03020400', '인라인(실내 인라인 포함)');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03020500', '자전거하이킹');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03020600', '카트');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03020700', '골프');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03020800', '경마');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03020900', '경륜');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03021000', '카지노');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03021100', '승마');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03021200', '스키/스노보드');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03021300', '스케이트');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03021400', '썰매장');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03021500', '수렵장');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03021600', '사격장');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03021700', '야영장,오토캠핑장');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03021800', '암벽등반');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03021900', '빙벽등반');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03022000', '서바이벌게임');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03022100', 'ATV');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03022200', 'MTV');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03022300', '오프로드');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03022400', '번지점프');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03022500', '자동차경주');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03022600', '스키(보드) 렌탈샵');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0302', 'A03022700', '트래킹');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0303', 'A03030100', '윈드서핑/제트스키');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0303', 'A03030200', '카약/카누');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0303', 'A03030300', '요트');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0303', 'A03030400', '스노쿨링/스킨스쿠버다이빙');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0303', 'A03030500', '민물낚시');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0303', 'A03030600', '바다낚시');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0303', 'A03030700', '수영');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0303', 'A03030800', '래프팅');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0304', 'A03040100', '스카이다이빙');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0304', 'A03040200', '초경량비행');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0304', 'A03040300', '행글라이딩/패러글라이딩');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0304', 'A03040400', '열기구');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0305', 'A03050100', '복합 레포츠');
+		
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('B0201', 'B02010100', '관광호텔');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('B0201', 'B02010200', '수상관광호텔');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('B0201', 'B02010300', '전통호텔');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('B0201', 'B02010400', '가족호텔');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('B0201', 'B02010500', '콘도미니엄');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('B0201', 'B02010600', '유스호스텔');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('B0201', 'B02010700', '펜션');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('B0201', 'B02010800', '여관');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('B0201', 'B02010900', '모텔');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('B0201', 'B02011000', '민박');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('B0201', 'B02011100', '게스트하우스');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('B0201', 'B02011200', '홈스테이');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('B0201', 'B02011300', '서비스드레지던스');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('B0201', 'B02011400', '의료관광호텔');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('B0201', 'B02011500', '소형호텔');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('B0201', 'B02011600', '한옥스테이');
+		
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0401', 'A04010100', '5일장');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0401', 'A04010200', '상설시장');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0401', 'A04010300', '백화점');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0401', 'A04010400', '면세점');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0401', 'A04010500', '할인매장');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0401', 'A04010600', '전문상가');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0401', 'A04010700', '공예,공방');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0401', 'A04010800', '관광기념품점');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0401', 'A04010900', '특산물판매점');
+		
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0502', 'A05020100', '한식');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0502', 'A05020200', '서양식');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0502', 'A05020300', '일식');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0502', 'A05020400', '중식');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0502', 'A05020500', '아시아식');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0502', 'A05020600', '패밀리레스토랑');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0502', 'A05020700', '이색음식점');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0502', 'A05020800', '채식전문점');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0502', 'A05020900', '바/까페');
+		insert into T_Cat3 (Cat2Code, Cat3Code, Cat3Name) values ('A0502', 'A05021000', '클럽');
+		
+
+		
+		
+	-- 7. 컨텐츠공통 관련 DB 정보
+		-- 컨텐츠공통 테이블 생성
+		create table T_ContentCommon(
+		ContentId varchar2(20) not null, 		-- 컨텐츠 ID
+		Addr1 varchar2(200),					-- 
+		Addr2 varchar2(200),					-- 
+		BookTour varchar2(10),					-- 
+		CreatedTime varchar2(20),				-- 
+		FirstImage varchar2(100),				-- 
+		FirstImage2 varchar2(100),				-- 
+		MapX varchar2(20),						-- 
+		MapY varchar2(20),						-- 
+		MLevel varchar2(10),					-- 
+		ModifiedTime varchar2(20),				-- 
+		ReadCount varchar2(10),					-- 
+		AreaCode varchar2(10),					--
+		Cat1Code varchar2(10),					--
+		Cat2Code varchar2(10),					--
+		Cat3Code varchar2(10),					--
+		ContentTypeId varchar2(10) not null,	--
+		Tel varchar2(200),						-- 
+		Title varchar2(200),					-- 
+		ZipCode varchar2(20),					-- 
+		SiGunGuCode varchar2(10),				-- 시군구 코드
+		HomePage varchar2(100),					-- 
+		TelName varchar2(50),					-- 
+		OverView varchar2(1000), 				-- 
+		primary key(ContentId)					-- 기본키 설정
+		);
+		
+		-- 컨텐츠공통 시퀀스 생성
+		-- 시퀀스 생성 필요없음
+		
+		-- 컨텐츠공통 외래키 설정
+		ALTER TABLE T_ContentCommon ADD CONSTRAINT Fk_ContentCommonAreaCode FOREIGN KEY(AreaCode) REFERENCES T_Area(AreaCode);
+		-- ALTER TABLE T_ContentCommon ADD CONSTRAINT Fk_ContentCommonCat1Code FOREIGN KEY(Cat1Code) REFERENCES T_Cat1(Cat1Code);
+		-- ALTER TABLE T_ContentCommon ADD CONSTRAINT Fk_ContentCommonCat2Code FOREIGN KEY(Cat2Code) REFERENCES T_Cat2(Cat2Code);
+		-- ALTER TABLE T_ContentCommon ADD CONSTRAINT Fk_ContentCommonCat3Code FOREIGN KEY(Cat3Code) REFERENCES T_Cat3(Cat3Code);
+
+		-- 컨텐츠공통 기본데이터 설정
+		-- API 이용해서 가져옴
+
+
+
+	-- 8. 컨텐츠갤러리 관련 DB 정보
+		-- 컨텐츠갤러리 테이블 생성
+		create table T_ContentGallary(
+		GalContentId varchar2(20),	 			-- 
+		GalContentTypeId varchar2(10),	 		-- 
+		GalTitle varchar2(200),	 				-- 
+		GalWebImageUrl varchar2(200),	 		-- 
+		GalCreatedTime varchar2(30),	 		-- 
+		GalModifiedTime varchar2(30),	 		-- 
+		GalPhotographyMonth varchar2(10),		-- 
+		GalPhotographyLocation varchar2(100),	-- 
+		GalPhotographer varchar2(50),			-- 
+		GalSearchKeyword varchar2(300),			-- 
+		GalViewCount varchar2(10),				-- 
+		primary key(GalContentId)				-- 
+		);
+	
+		-- 컨텐츠갤러리 시퀀스 생성
+		-- 시퀀스 생성 필요 없음
+		
+		-- 컨텐츠갤러리 외래키 설정
+		-- 외래키 생성 필요 없음
+		
+		-- 컨텐츠갤러리 기본데이터 설정
+		-- API 이용해서 가져옴
+		
+		
+		
+	-- 9. 컨텐츠자연 관련 DB 정보
+		-- 컨텐츠자연 테이블 생성
+		create table T_ContentNature(
+		Addr varchar2(200),	 				-- 
+		AreaCode varchar2(10),	 			-- 
+		ContentId varchar2(10),	 			-- 
+		CreatedTime varchar2(50),	 		-- 
+		MainImage varchar2(200),	 		-- 
+		ModifiedTime varchar2(50),	 		-- 
+		ReadCount varchar2(10),				-- 
+		SiGunGuCode varchar2(10),			-- 
+		SubTitle varchar2(200),				-- 
+		Summary varchar2(2000),				-- 
+		Tel varchar2(50),					-- 
+		TelName varchar2(100),				-- 
+		Title varchar2(100),				-- 
+		primary key(ContentId)				-- 
+		);
+	
+		-- 컨텐츠자연 시퀀스 생성
+		-- 시퀀스 생성 필요 없음
+		
+		-- 컨텐츠자연 외래키 설정
+		ALTER TABLE T_ContentNature ADD CONSTRAINT Fk_ContentNatureAreaCode FOREIGN KEY(AreaCode) REFERENCES T_Area(AreaCode);
+		
+		-- 컨텐츠자연 기본데이터 설정
+		-- API 이용해서 가져옴
+		
+	
+	
+	-- 10. 유저등급 관련 DB 정보
+		-- 유저등급 테이블 생성
+		create table T_UserGrade(
+		GradeName varchar2(10),	 			-- 
+		primary key(GradeName)				-- 
+		);
+	
+		-- 유저등급 시퀀스 생성
+		-- 시퀀스 생성 필요 없음
+		
+		-- 유저등급 외래키 설정
+		-- 외래키 설정 필요 없음
+		
+		-- 유저등급 기본데이터 설정
+		insert into T_UserGrade values ('일반');
+		insert into T_UserGrade values ('특별');
+		insert into T_UserGrade values ('관리자');
+		
+		
+		
+	-- 11. 유저정보 관련 DB 정보
+		-- 유저정보 테이블 생성
+		create table T_UserInfo(
+		Email varchar2(60),	 				-- 
+		UserId varchar2(30),	 			--
+		Password varchar2(65),				--
+		GradeName varchar2(10),				--
+		primary key(Email)					-- 
+		);
+	
+		-- 유저정보 시퀀스 생성
+		-- 시퀀스 생성 필요 없음
+		
+		-- 유저정보 외래키 설정
+		ALTER TABLE T_UserInfo ADD CONSTRAINT Fk_UserInfoGradeName FOREIGN KEY(GradeName) REFERENCES T_UserGrade(GradeName);
+		
+		-- 유저정보 기본데이터 설정
+		-- 홈페이지에서 직접 생성 필요
+		-- 생성해야할 계정 kh@kh.com
+
+		
+	-- 12. 계획메인 관련 DB 정보
+		-- 계획메인 테이블 생성
+		create table T_PlanMain(
+		PlanMainNum varchar2(10),	 	-- 
+		Title varchar2(300),			--
+		StartDay date,					--
+		Completion varchar2(1),			--
+		Email varchar2(50),				--
+		primary key(PlanMainNum)		-- 
+		);
+	
+		-- 계획메인 시퀀스 생성
+		CREATE sequence Seq_PlanMainNum increment by 1 start with 1;
+		
+		-- 계획메인 외래키 설정
+		ALTER TABLE T_PlanMain ADD CONSTRAINT Fk_PlanMainEmail FOREIGN KEY(Email) REFERENCES t_userInfo(Email);
+		
+		-- 계획메인 기본데이터 설정
+		-- 나중에
+		
+		
+		
+	-- 13. 계획개략 관련 DB 정보
+		-- 계획개략 테이블 생성
+		create table T_PlanRough(
+		PlanRoughNum varchar2(10),				-- 
+		PlanMainNum varchar2(10),	 			-- 
+		AreaCode varchar2(10),				--
+		PlanDay varchar2(10),				--
+		primary key(PlanRoughNum)				-- 
+		);
+	
+		-- 계획개략 시퀀스 생성
+		CREATE sequence Seq_PlanRoughNum increment by 1 start with 1;
+		
+		-- 계획개략 외래키 설정
+		ALTER TABLE T_PlanRough ADD CONSTRAINT Fk_PlanRoughPlanMainNum FOREIGN KEY(PlanMainNum) REFERENCES T_PlanMain(PlanMainNum);
+		ALTER TABLE T_PlanRough ADD CONSTRAINT Fk_PlanRoughAreaCode FOREIGN KEY(AreaCode) REFERENCES T_Area(AreaCode);
+		
+		-- 계획개략 기본데이터 설정
+		-- 나중에
+		
+		
+		
+	-- 14. 계획상세 관련 DB 정보
+		-- 계획상세 테이블 생성
+		create table T_PlanDetail(
+		PlanDetailNum varchar2(10),			-- 
+		PlanMainNum varchar2(10),	 		-- 
+		ContentId varchar2(10),	 			--
+		StartTime varchar2(30),						--
+		EndTime varchar2(30),						--
+		primary key(PlanDetailNum)			-- 
+		);
+	
+		-- 계획상세 시퀀스 생성
+		CREATE sequence Seq_PlanDetailNum increment by 1 start with 1;
+		
+		-- 계획상세 외래키 설정
+		ALTER TABLE T_PlanDetail ADD CONSTRAINT Fk_PlanDetailPlanMainNum FOREIGN KEY(PlanMainNum) REFERENCES T_PlanMain(PlanMainNum);
+		ALTER TABLE T_PlanDetail ADD CONSTRAINT Fk_PlanDetailContentId FOREIGN KEY(ContentId) REFERENCES T_ContentCommon(ContentId);
+		
+		-- 계획상세 기본데이터 설정
+		-- 나중에
+		
+		
+	-- 15. 리뷰게시판 관련 DB 정보
+		-- 리뷰게시판 테이블 생성
+		create table T_ReviewBoard(
+		BoardNum number(10),	 			-- 
+		Subject varchar2(300),				--
+		Content varchar2(2000),				--
+		RegDate date,				--
+		ViewCount number(5),				--
+		Show varchar2(5),					--
+		writer varchar2(30),
+		email varchar2(30),
+		primary key(BoardNum)				-- 
+		);
+	
+		-- 리뷰게시판 시퀀스 생성
+		CREATE sequence Seq_ReviewBoardNum increment by 1 start with 1;
+		
+		-- 리뷰게시판 외래키 설정
+		ALTER TABLE T_ReviewBoard ADD CONSTRAINT Fk_ReviewBoardEmail FOREIGN KEY(Writer) REFERENCES T_UserInfo(Email);
+		
+		-- 리뷰게시판 기본데이터 설정
+		-- 나중에
+		
+		
+		
+	-- 16. 리뷰댓글 관련 DB 정보
+		-- 리뷰댓글 테이블 생성
+		create table T_ReviewReply(
+		ReplyNum number(10),	 			-- 
+		Content varchar2(2000),				--
+		RegDate date,				--
+		UpdateDate date,			--	
+		SecretReply varchar2(5),			--
+		BoardNum number(10),				--
+		Email varchar2(50),					--
+		primary key(ReplyNum)				-- 
+		);
+	
+		-- 리뷰댓글 시퀀스 생성
+		CREATE sequence Seq_ReviewReplyNum increment by 1 start with 1;
+		
+		-- 리뷰댓글 외래키 설정
+		ALTER TABLE T_ReviewReply ADD CONSTRAINT Fk_ReviewReplyEmail FOREIGN KEY(Email) REFERENCES T_UserInfo(Email);
+		ALTER TABLE T_ReviewReply ADD CONSTRAINT Fk_ReviewReplyBoardNum FOREIGN KEY(BoardNum) REFERENCES T_ReviewBoard(BoardNum);
+		
+		-- 리뷰댓글 기본데이터 설정
+		-- 나중에
+				
+	
+		
+		-- 17. 플랜댓글 관련 DB 정보
+		-- 플랜댓글 테이블 생성
+		create table T_PlanReply(
+		planReplyNum varchar2(10),	 			-- 
+		planMainNum varchar2(10),	 			-- 
+		Email varchar2(50),					--
+		Content varchar2(2000),				--
+		RegDate varchar2(30),				--
+		UpdateDate varchar2(30),			--	
+		SecretReply varchar2(5),			--
+		primary key(planReplyNum)				-- 
+		);
+	
+		-- 플랜댓글 시퀀스 생성
+		CREATE sequence Seq_PlanReplyNum increment by 1 start with 1;
+		
+		-- 플랜댓글 외래키 설정
+		ALTER TABLE T_PlanReply ADD CONSTRAINT Fk_PlanReplyEmail FOREIGN KEY(Email) REFERENCES T_UserInfo(Email);
+		ALTER TABLE T_PlanReply ADD CONSTRAINT Fk_PlanReplyPlanMainNum FOREIGN KEY(planMainNum) REFERENCES T_PlanMain(planMainNum);
+		
+		-- 플랜댓글 기본데이터 설정
+		-- 나중에
+	
+	
+	create table my_travel( 
+  id varchar2(20) not null, 
+  travel_name varchar2(100) not null,
+  primary key(id, travel_name)); 
+  ALTER TABLE my_travel ADD CONSTRAINT Fk_MyTravelIdEmail FOREIGN KEY(id) REFERENCES T_UserInfo(Email);
+
+	create table album( 
+	  id varchar2(20) not null, 
+	  travel_name varchar2(100) not null, 
+	  albumname varchar2(100), 
+	  albumpath varchar2(100),
+	  constraint fk_travel_album foreign key(id,travel_name) references my_travel(id,travel_name)  on delete cascade
+	); 
+
+	create table chart( 
+	  id varchar2(20) not null, 
+	  travel_name varchar2(100) not null, 
+	  flight number(5), 
+	  transfer number(5), 
+	  hotel number(5), 
+	  tour number(5), 
+	  meal number(5),
+	  constraint fk_travel_chart foreign key(id,travel_name) references my_travel(id,travel_name)  on delete cascade
+	);
+	
+	
+
+
+	-- 테스트 모음 --	
+	-- 1. 멤버 테스트 쿼리
+	SELECT COUNT(*) FROM tbl_member;		
+	-- 총 데이터가 100개라면 성공적으로 입력 된 것
+
+	-- @ 최종 테이블, 시퀀스 구조 확인
+	SELECT * FROM tab;
+	SELECT * FROM all_sequences WHERE SEQUENCE_OWNER='FINALKH';
+	
+	
+	-- ****최종 커밋****
+	-- commit; -- 커밋 명령은 수동으로 입력하세요
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------	
+---------------------------------------------------------------------------------------------	
+---------------------------------------------------------------------------------------------	
+---------------------------------------------------------------------------------------------	
+---------------------------------------------------------------------------------------------	
+---------------------------------------------------------------------------------------------
+	
