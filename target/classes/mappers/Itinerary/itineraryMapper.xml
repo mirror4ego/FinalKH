@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 다른 mapper와 중복되지 않도록 네임스페이스 기재 -->
+<mapper namespace="itinerary">
+
+	<!-- 여행일정 리스트 만들기 -->
+	<select id="itineraryList" resultType="com.kh.web.model.itinerary.dto.PlanMainMemberVO">
+		SELECT
+			planmainnum,
+			title,
+			startday,
+			completion,
+			email,
+			userid
+		FROM t_planmain
+		NATURAL JOIN t_userinfo
+		ORDER BY to_number(planmainnum) Desc
+	</select>
+	
+	<!-- 여행 장소 뽑아내기 -->
+	<select id="areaList" resultType="com.kh.web.model.itinerary.dto.PlanAreaVO">
+		SELECT
+		DISTINCT
+			planmainnum,
+			areacode,
+		 	areaname,
+		 	areaimage
+		FROM t_planmain
+		NATURAL JOIN t_planrough
+		NATURAL JOIN t_area
+		ORDER BY to_number(planmainnum) Desc
+	</select>
+</mapper>

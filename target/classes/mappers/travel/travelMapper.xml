@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 다른 mapper와 중복되지 않도록 네임스페이스 기재 -->
+<mapper namespace="travel">
+
+	
+	<select id="selectAllArea" resultType="com.kh.web.model.travel.dto.AreaVO">
+		SELECT * FROM T_Area
+	</select>
+	<select id="selectAllContentCommon" resultType="com.kh.web.model.travel.dto.ContentCommonVO">
+		SELECT * FROM
+		T_ContentCommon
+	</select>
+	<select id="bringAllInMap" resultType="com.kh.web.model.travel.dto.ContentCommonVO">
+		SELECT * FROM
+		T_ContentCommon where (mapX between #{westBP} AND #{eastBP}) AND (mapY
+		between #{southBP} AND #{northBP}) AND rownum &lt;= 100
+	</select>
+	<select id="bringPlaceOnMap" resultType="com.kh.web.model.travel.dto.ContentCommonVO">
+		SELECT * FROM
+		T_ContentCommon where
+		(mapX between #{westBP} AND
+		#{eastBP}) AND (mapY between #{southBP} AND
+		#{northBP})
+
+		<if test="titleOption != null and (titleOption != ''.toString())">
+			AND title like '%' || #{titleOption, jdbcType=VARCHAR} ||
+			'%'
+		</if>
+		<if
+			test="contentTypeIdOption != null and (contentTypeIdOption != ''.toString())">
+			AND contentTypeId=#{contentTypeIdOption, jdbcType=VARCHAR}
+		</if>
+		<if test="areaCodeOption != null and (areaCodeOption != ''.toString())">
+			AND areaCode=#{areaCodeOption, jdbcType=VARCHAR}
+		</if>
+		AND rownum &lt;= 100
+	</select>
+	<insert id="insertPlanMain">
+		insert
+		into T_PlanMain values
+		(seq_PlanMainNum.nextval, #{title},
+		#{startDay}, #{completion},
+		#{email})
+	</insert>
+	<select id="selectLast" resultType="java.lang.String">
+		SELECT PlanMainNum FROM
+		(SELECT * FROM T_PlanMain ORDER BY to_number(PlanMainNum) DESC)
+		WHERE
+		ROWNUM = 1
+	</select>
+	<select id="selectArea" resultType="java.lang.String">
+		SELECT areaCode FROM T_Area
+		where areaName=#{areaName}
+	</select>
+
+	<select id="selectPlanMain" resultType="com.kh.web.model.travel.dto.PlanMainVO">
+		select * from T_PlanMain
+		where PlanMainNum=#{planMainNum}
+	</select>
+
+	<select id="selectPlanRoughAreaJoin" resultType="com.kh.web.model.travel.dto.PlanRoughAreaJoinVO">
+		select * FROM
+		t_planrough inner JOIN t_area ON (t_planrough.areaCode =
+		t_area.areaCode) where t_planrough.planMainNum=#{planMainNum} ORDER BY to_number(t_planrough.PlanDay)
+	</select>
+	<select id="selectPlanDetailContentCommonJoin" resultType="com.kh.web.model.travel.dto.PlanDetailContentCommonJoinVO">
+		select * FROM
+		T_PlanDetail inner JOIN t_ContentCommon ON (t_plandetail.contentId =
+		t_ContentCommon.contentId) where t_planDetail.planMainNum=#{planMainNum}
+	</select>
+
+	<insert id="insertPlanRough">
+		insert
+		into T_PlanRough values
+		(seq_PlanRoughNum.nextval, #{planMainNum},
+		#{areaCode}, #{planDay})
+	</insert>
+
+	<delete id="deleteAllPlanDetail">
+		delete from t_plandetail where
+		planmainnum=#{planMainNum}
+	</delete>
+	<delete id="deleteAllPlanRough">
+		delete from t_planrough where
+		planmainnum=#{planMainNum}
+	</delete>
+
+
+	<insert id="insertPlanDetail">
+		insert
+		into T_PlanDetail values
+		(seq_PlanDetailNum.nextval, #{planMainNum},
+		#{contentId}, #{startTime},
+		#{endTime, jdbcType=VARCHAR})
+	</insert>
+
+     
+    <select id="selectImage" resultType="com.kh.web.model.travel.dto.ImageVO">
+        SELECT
+  		AREAIMAGE
+        FROM T_AREA
+        
+    </select>
+    
+</mapper>
