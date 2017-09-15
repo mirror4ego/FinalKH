@@ -956,6 +956,7 @@
 	
 		-- 리뷰게시판 시퀀스 생성
 		CREATE sequence Seq_ReviewBoardNum increment by 1 start with 1;
+		create sequence seq_review increment by 1 start with 1;
 		
 		-- 리뷰게시판 외래키 설정
 		ALTER TABLE T_ReviewBoard ADD CONSTRAINT Fk_ReviewBoardEmail FOREIGN KEY(Writer) REFERENCES T_UserInfo(Email);

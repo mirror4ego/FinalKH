@@ -62,7 +62,7 @@ body>.grid {
             class="image">
          <div class="content">Log-in to your account</div>
       </h2>
-      <form class="ui large login form" action="/web/member/loginCheck_test.do" method="post" name="login">
+      <form class="ui large login form" action="${path}/member/loginCheck_test.do" method="post" name="login">
          <div class="ui stacked segment">
             <div class="field">
                <div class="ui left icon input">

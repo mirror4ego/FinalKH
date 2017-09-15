@@ -52,7 +52,7 @@ public class ParseJsonContentCommon {
 		datas = gson.fromJson(jsonItemObject, collectionType);
 
 		Class.forName("oracle.jdbc.driver.OracleDriver");
-		con = DriverManager.getConnection("jdbc:oracle:thin:@mirror4ego.iptime.org:1521:orcl", "finalkh", "finalkh");
+		con = DriverManager.getConnection("jdbc:oracle:thin:@mirror4ego.iptime.org:1521:server", "finalkh", "finalkh");
 		System.out.println("데이터베이스의 연결에 성공하였습니다.");
 
 		int count = 0;
