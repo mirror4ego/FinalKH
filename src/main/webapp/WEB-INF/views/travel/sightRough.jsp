@@ -98,7 +98,7 @@
 						overview='';
 					}
 					if(firstimage==null){
-						firstimage = 'http://www.giclove.com/core/images/etc/noimg_main.gif';
+						firstimage = 'http://americanconstruction.net/wp-content/uploads/2015/10/upload-empty.png';
 					}
 					if(addr1==null){
 						addr1 = '';

@@ -182,11 +182,7 @@ table th {
 	</div><!-- ui container --> 
 	</section>
 	<footer>
-	<div class="ui fluid container">
-		<div class="ui grid">			
 			<%@ include file="../include/footerMain.jsp"%>
-		</div>
-	</div>
 	</footer>
 </body>
 </html>
